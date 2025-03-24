@@ -109,73 +109,73 @@
         <div class="control-group">
             <div class="control-label">
                 <span>Center Mass</span>
-                <span class="control-value" id="centerMassValue">20</span>
+                <span class="control-value" id="centerMassValue">19</span>
             </div>
-            <input type="range" id="centerMass" min="1" max="20" value="20" step="0.5">
+            <input type="range" id="centerMass" min="1" max="20" value="19" step="0.5">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Center Friction</span>
-                <span class="control-value" id="centerFrictionValue">0.44</span>
+                <span class="control-value" id="centerFrictionValue">0.21</span>
             </div>
-            <input type="range" id="centerFriction" min="0.01" max="0.5" value="0.44" step="0.01">
+            <input type="range" id="centerFriction" min="0.01" max="0.5" value="0.21" step="0.01">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Node Count</span>
-                <span class="control-value" id="nodeCountValue">17</span>
+                <span class="control-value" id="nodeCountValue">36</span>
             </div>
-            <input type="range" id="nodeCount" min="3" max="100" value="17" step="1">
+            <input type="range" id="nodeCount" min="3" max="100" value="36" step="1">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Node Size</span>
-                <span class="control-value" id="nodeSizeValue">23</span>
+                <span class="control-value" id="nodeSizeValue">18</span>
             </div>
-            <input type="range" id="nodeSize" min="1" max="70" value="23" step="1">
+            <input type="range" id="nodeSize" min="1" max="70" value="18" step="1">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Orbit Radius</span>
-                <span class="control-value" id="orbitRadiusValue">200</span>
+                <span class="control-value" id="orbitRadiusValue">190</span>
             </div>
-            <input type="range" id="orbitRadius" min="100" max="600" value="200" step="10">
+            <input type="range" id="orbitRadius" min="100" max="600" value="190" step="10">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Attraction Force</span>
-                <span class="control-value" id="attractionForceValue">0.000013</span>
+                <span class="control-value" id="attractionForceValue">0.000017</span>
             </div>
-            <input type="range" id="attractionForce" min="0.000001" max="0.00018" value="0.000013" step="0.000001">
+            <input type="range" id="attractionForce" min="0.000001" max="0.00018" value="0.000017" step="0.000001">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Repulsion Force</span>
-                <span class="control-value" id="repulsionForceValue">0.009701</span>
+                <span class="control-value" id="repulsionForceValue">0.013201</span>
             </div>
-            <input type="range" id="repulsionForce" min="0.000001" max="0.09" value="0.009701" step="0.0001">
+            <input type="range" id="repulsionForce" min="0.000001" max="0.09" value="0.013201" step="0.0001">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Node Repulsion Field</span>
-                <span class="control-value" id="repulsionDistanceValue">3.0</span>
+                <span class="control-value" id="repulsionDistanceValue">2.5</span>
             </div>
-            <input type="range" id="repulsionDistance" min="1.0" max="8.0" value="3.0" step="0.5">
+            <input type="range" id="repulsionDistance" min="1.0" max="8.0" value="2.5" step="0.5">
         </div>
         
         <div class="control-group">
             <div class="control-label">
                 <span>Node Friction</span>
-                <span class="control-value" id="nodeFrictionValue">0.04</span>
+                <span class="control-value" id="nodeFrictionValue">0.28</span>
             </div>
-            <input type="range" id="nodeFriction" min="0.01" max="1.0" value="0.04" step="0.01">
+            <input type="range" id="nodeFriction" min="0.01" max="1.0" value="0.28" step="0.01">
         </div>
         
         <div class="control-group">
@@ -201,6 +201,8 @@
         </div>
         
         <button id="resetScene">Reset Scene</button>
+        <button id="preset1" style="margin-left: 10px;">Preset 1</button>
+        <button id="preset2" style="margin-left: 10px;">Preset 2</button>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>

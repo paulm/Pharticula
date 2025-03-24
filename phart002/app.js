@@ -13,20 +13,38 @@ const {
     Events
 } = Matter;
 
-// Configuration object that will be controlled by UI sliders
-const config = {
-    centerMass: 20,            // High mass for very stable center
-    centerFriction: 0.44,      // High friction for controlled movement
-    nodeCount: 17,             // More nodes for richer interaction
-    nodeSize: 23,              // Larger nodes
-    orbitRadius: 200,          // Same orbit radius
-    attractionForce: 0.000013, // Precise attraction value
-    repulsionForce: 0.009701,  // Much stronger repulsion between nodes
-    repulsionDistance: 3.0,    // Medium repulsion field
-    nodeFriction: 0.04,        // Lower friction for smoother node movement
-    connectionStiffness: 0.0042, // Specific connection stiffness
-    showConnections: true      // Whether to show connection lines
+// Preset configuration values
+const presets = {
+    preset1: {
+        centerMass: 19,            // High mass for very stable center
+        centerFriction: 0.21,      // High friction for controlled movement
+        nodeCount: 36,             // More nodes for richer interaction
+        nodeSize: 18,              // Larger nodes
+        orbitRadius: 190,          // Same orbit radius
+        attractionForce: 0.000017, // Precise attraction value
+        repulsionForce: 0.013201,  // Much stronger repulsion between nodes
+        repulsionDistance: 2.5,    // Medium repulsion field
+        nodeFriction: 0.28,        // Lower friction for smoother node movement
+        connectionStiffness: 0.0042, // Specific connection stiffness
+        showConnections: true      // Whether to show connection lines
+    },
+    preset2: {
+        centerMass: 20,            // Maximum mass for center
+        centerFriction: 0.5,       // Maximum friction 
+        nodeCount: 69,             // Large number of nodes
+        nodeSize: 5,               // Very small nodes
+        orbitRadius: 350,          // Large orbit radius
+        attractionForce: 0.000017, // Same attraction force
+        repulsionForce: 0.000007,  // Very low repulsion force
+        repulsionDistance: 2.5,    // Same repulsion field
+        nodeFriction: 0.28,        // Same node friction
+        connectionStiffness: 0.0042, // Same connection stiffness
+        showConnections: false     // Hide connections
+    }
 };
+
+// Configuration object that will be controlled by UI sliders
+const config = {...presets.preset1};
 
 // Variables to store our physics objects
 let nodes = [];
@@ -156,9 +174,9 @@ function createScene() {
         60, // Slightly larger center node
         {
             render: {
-                fillStyle: '#000000', // Black fill
-                strokeStyle: '#000000', // Black stroke
-                lineWidth: 2
+                fillStyle: '#f5f5f5', // Very light gray fill
+                strokeStyle: '#dddddd', // Light gray stroke
+                lineWidth: 1
             },
             isStatic: false,
             mass: config.centerMass,
@@ -198,7 +216,7 @@ function createScene() {
             bodyA: centerNode,
             bodyB: node,
             render: {
-                visible: true,
+                visible: config.showConnections,
                 lineWidth: 1,
                 strokeStyle: 'rgba(0, 0, 0, 0.2)' // Light black (gray) connections
             },
@@ -342,6 +360,41 @@ function setupControlListeners() {
     document.getElementById('resetScene').addEventListener('click', () => {
         createScene();
     });
+    
+    // Apply preset function for both preset buttons
+    function applyPreset(presetName) {
+        // Reset all config values to preset values
+        Object.assign(config, presets[presetName]);
+        
+        // Update all UI sliders
+        document.getElementById('centerMass').value = config.centerMass;
+        document.getElementById('centerFriction').value = config.centerFriction;
+        document.getElementById('nodeCount').value = config.nodeCount;
+        document.getElementById('nodeSize').value = config.nodeSize;
+        document.getElementById('orbitRadius').value = config.orbitRadius;
+        document.getElementById('attractionForce').value = config.attractionForce;
+        document.getElementById('repulsionForce').value = config.repulsionForce;
+        document.getElementById('repulsionDistance').value = config.repulsionDistance;
+        document.getElementById('nodeFriction').value = config.nodeFriction;
+        document.getElementById('connectionStiffness').value = config.connectionStiffness;
+        document.getElementById('showConnections').checked = config.showConnections;
+        
+        // Update UI display values
+        updateUIValues();
+        
+        // Recreate scene with preset values
+        createScene();
+    }
+    
+    // Preset 1 button
+    document.getElementById('preset1').addEventListener('click', () => {
+        applyPreset('preset1');
+    });
+    
+    // Preset 2 button
+    document.getElementById('preset2').addEventListener('click', () => {
+        applyPreset('preset2');
+    });
 
     // Controls toggle for mobile
     document.getElementById('toggleControls').addEventListener('click', () => {
@@ -357,6 +410,16 @@ function setupControlListeners() {
     document.getElementById('showDebug').addEventListener('change', (e) => {
         render.options.showDebug = e.target.checked;
     });
+    
+    // Show connections toggle
+    document.getElementById('showConnections').addEventListener('change', (e) => {
+        config.showConnections = e.target.checked;
+        
+        // Update all existing constraints visibility
+        connections.forEach(connection => {
+            connection.render.visible = config.showConnections;
+        });
+    });
 }
 
 // Optimize custom rendering with batching and caching
@@ -367,18 +430,20 @@ Events.on(render, 'afterRender', function() {
     const centerX = centerNode.position.x;
     const centerY = centerNode.position.y;
     
-    // Draw connection lines first as base layer
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Light black (gray) connections
-    ctx.lineWidth = 1;
-    
-    // Batch all line drawing in a single path
-    for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(node.position.x, node.position.y);
+    // Draw connection lines first as base layer - only if showConnections is true
+    if (config.showConnections) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Light black (gray) connections
+        ctx.lineWidth = 1;
+        
+        // Batch all line drawing in a single path
+        for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(node.position.x, node.position.y);
+        }
+        ctx.stroke();
     }
-    ctx.stroke();
     
     // Draw debug visualizations if enabled - with batching
     if (render.options.showDebug) {

@@ -2,7 +2,7 @@
 
 A minimalist physics-based particle visualization that explores emergent behavior through simulated forces of attraction and repulsion.
 
-![Pharticula Physics Visualization](screenshot.png)
+![Pharticula Physics Visualization 002](phart002.png)
 
 ## Overview
 
