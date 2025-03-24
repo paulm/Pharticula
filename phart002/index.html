@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Visualization</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: black;
+            background-color: white;
+        }
+        canvas {
+            display: block;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            width: 250px;
+            z-index: 100;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .control-value {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        input[type="range"] {
+            width: 100%;
+            background: #eee;
+            height: 5px;
+            border-radius: 5px;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #000;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #333;
+        }
+        h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #000;
+        }
+        .toggle-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 101;
+        }
+        @media (max-width: 768px) {
+            #controls {
+                width: 80%;
+                max-width: 300px;
+            }
+            .toggle-controls {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-controls" id="toggleControls">≡</button>
+    <div id="controls">
+        <h3>Physics Controls</h3>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Center Mass</span>
+                <span class="control-value" id="centerMassValue">20</span>
+            </div>
+            <input type="range" id="centerMass" min="1" max="20" value="20" step="0.5">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Center Friction</span>
+                <span class="control-value" id="centerFrictionValue">0.44</span>
+            </div>
+            <input type="range" id="centerFriction" min="0.01" max="0.5" value="0.44" step="0.01">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Node Count</span>
+                <span class="control-value" id="nodeCountValue">17</span>
+            </div>
+            <input type="range" id="nodeCount" min="3" max="100" value="17" step="1">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Node Size</span>
+                <span class="control-value" id="nodeSizeValue">23</span>
+            </div>
+            <input type="range" id="nodeSize" min="1" max="70" value="23" step="1">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Orbit Radius</span>
+                <span class="control-value" id="orbitRadiusValue">200</span>
+            </div>
+            <input type="range" id="orbitRadius" min="100" max="600" value="200" step="10">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Attraction Force</span>
+                <span class="control-value" id="attractionForceValue">0.000013</span>
+            </div>
+            <input type="range" id="attractionForce" min="0.000001" max="0.00018" value="0.000013" step="0.000001">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Repulsion Force</span>
+                <span class="control-value" id="repulsionForceValue">0.009701</span>
+            </div>
+            <input type="range" id="repulsionForce" min="0.000001" max="0.09" value="0.009701" step="0.0001">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Node Repulsion Field</span>
+                <span class="control-value" id="repulsionDistanceValue">3.0</span>
+            </div>
+            <input type="range" id="repulsionDistance" min="1.0" max="8.0" value="3.0" step="0.5">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Node Friction</span>
+                <span class="control-value" id="nodeFrictionValue">0.04</span>
+            </div>
+            <input type="range" id="nodeFriction" min="0.01" max="1.0" value="0.04" step="0.01">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Connection Stiffness</span>
+                <span class="control-value" id="connectionStiffnessValue">0.0042</span>
+            </div>
+            <input type="range" id="connectionStiffness" min="0.0001" max="0.01" value="0.0042" step="0.0001">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
+                <span>Show Connections</span>
+                <input type="checkbox" id="showConnections" checked>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Debug Visualization</span>
+                <input type="checkbox" id="showDebug">
+            </div>
+        </div>
+        
+        <button id="resetScene">Reset Scene</button>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
