@@ -18,6 +18,7 @@ const presets = {
     preset1: {
         centerMass: 19,            // High mass for very stable center
         centerFriction: 0.21,      // High friction for controlled movement
+        centerSize: 60,            // Size of center node
         nodeCount: 36,             // More nodes for richer interaction
         nodeSize: 18,              // Larger nodes
         orbitRadius: 190,          // Same orbit radius
@@ -26,11 +27,13 @@ const presets = {
         repulsionDistance: 2.5,    // Medium repulsion field
         nodeFriction: 0.28,        // Lower friction for smoother node movement
         connectionStiffness: 0.0042, // Specific connection stiffness
-        showConnections: true      // Whether to show connection lines
+        showConnections: false,    // Hide custom connection lines
+        showSprings: false         // Hide Matter.js constraint springs
     },
     preset2: {
         centerMass: 20,            // Maximum mass for center
         centerFriction: 0.5,       // Maximum friction 
+        centerSize: 40,            // Size of center node (smaller)
         nodeCount: 69,             // Large number of nodes
         nodeSize: 5,               // Very small nodes
         orbitRadius: 350,          // Large orbit radius
@@ -39,7 +42,8 @@ const presets = {
         repulsionDistance: 2.5,    // Same repulsion field
         nodeFriction: 0.28,        // Same node friction
         connectionStiffness: 0.0042, // Same connection stiffness
-        showConnections: false     // Hide connections
+        showConnections: false,    // Hide custom connection lines
+        showSprings: false         // Hide Matter.js constraint springs
     }
 };
 
@@ -171,7 +175,7 @@ function createScene() {
     centerNode = Bodies.circle(
         window.innerWidth / 2,
         window.innerHeight / 2,
-        60, // Slightly larger center node
+        config.centerSize, // Use configurable center size
         {
             render: {
                 fillStyle: '#f5f5f5', // Very light gray fill
@@ -216,9 +220,9 @@ function createScene() {
             bodyA: centerNode,
             bodyB: node,
             render: {
-                visible: config.showConnections,
+                visible: config.showSprings,
                 lineWidth: 1,
-                strokeStyle: 'rgba(0, 0, 0, 0.2)' // Light black (gray) connections
+                strokeStyle: 'rgba(0, 0, 0, 0.1)' // Lighter gray connections
             },
             stiffness: config.connectionStiffness,
             damping: 0.1,
@@ -251,6 +255,7 @@ function createScene() {
 function updateUIValues() {
     document.getElementById('centerMassValue').textContent = config.centerMass;
     document.getElementById('centerFrictionValue').textContent = config.centerFriction;
+    document.getElementById('centerSizeValue').textContent = config.centerSize;
     document.getElementById('nodeCountValue').textContent = config.nodeCount;
     document.getElementById('nodeSizeValue').textContent = config.nodeSize;
     document.getElementById('orbitRadiusValue').textContent = config.orbitRadius;
@@ -275,6 +280,13 @@ function setupControlListeners() {
         config.centerFriction = parseFloat(e.target.value);
         document.getElementById('centerFrictionValue').textContent = config.centerFriction;
         if (centerNode) centerNode.frictionAir = config.centerFriction;
+    });
+    
+    // Center Size - requires regenerating the scene
+    document.getElementById('centerSize').addEventListener('change', (e) => {
+        config.centerSize = parseInt(e.target.value);
+        document.getElementById('centerSizeValue').textContent = config.centerSize;
+        createScene(); // Recreate since we can't easily resize bodies
     });
 
     // Node Count - requires regenerating the scene
@@ -369,6 +381,7 @@ function setupControlListeners() {
         // Update all UI sliders
         document.getElementById('centerMass').value = config.centerMass;
         document.getElementById('centerFriction').value = config.centerFriction;
+        document.getElementById('centerSize').value = config.centerSize;
         document.getElementById('nodeCount').value = config.nodeCount;
         document.getElementById('nodeSize').value = config.nodeSize;
         document.getElementById('orbitRadius').value = config.orbitRadius;
@@ -378,6 +391,7 @@ function setupControlListeners() {
         document.getElementById('nodeFriction').value = config.nodeFriction;
         document.getElementById('connectionStiffness').value = config.connectionStiffness;
         document.getElementById('showConnections').checked = config.showConnections;
+        document.getElementById('showSprings').checked = config.showSprings;
         
         // Update UI display values
         updateUIValues();
@@ -411,13 +425,18 @@ function setupControlListeners() {
         render.options.showDebug = e.target.checked;
     });
     
-    // Show connections toggle
+    // Show connections toggle (custom lines)
     document.getElementById('showConnections').addEventListener('change', (e) => {
         config.showConnections = e.target.checked;
+    });
+    
+    // Show springs toggle (Matter.js constraints)
+    document.getElementById('showSprings').addEventListener('change', (e) => {
+        config.showSprings = e.target.checked;
         
         // Update all existing constraints visibility
         connections.forEach(connection => {
-            connection.render.visible = config.showConnections;
+            connection.render.visible = config.showSprings;
         });
     });
 }
@@ -430,10 +449,10 @@ Events.on(render, 'afterRender', function() {
     const centerX = centerNode.position.x;
     const centerY = centerNode.position.y;
     
-    // Draw connection lines first as base layer - only if showConnections is true
+    // Draw custom connection lines - only if showConnections is true
     if (config.showConnections) {
         ctx.beginPath();
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Light black (gray) connections
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)'; // Lighter gray connections
         ctx.lineWidth = 1;
         
         // Batch all line drawing in a single path

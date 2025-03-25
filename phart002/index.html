@@ -124,6 +124,14 @@
         
         <div class="control-group">
             <div class="control-label">
+                <span>Center Size</span>
+                <span class="control-value" id="centerSizeValue">60</span>
+            </div>
+            <input type="range" id="centerSize" min="10" max="120" value="60" step="5">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">
                 <span>Node Count</span>
                 <span class="control-value" id="nodeCountValue">36</span>
             </div>
@@ -189,7 +197,14 @@
         <div class="control-group">
             <div class="control-label">
                 <span>Show Connections</span>
-                <input type="checkbox" id="showConnections" checked>
+                <input type="checkbox" id="showConnections">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Show Springs</span>
+                <input type="checkbox" id="showSprings">
             </div>
         </div>
 
